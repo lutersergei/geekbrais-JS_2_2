@@ -36,6 +36,7 @@ window.onload = function()
         }
     }
 
+    //Редактирование пользователя
     var edit_buttons = document.querySelectorAll(".btn-edit");
     for(var i = 0;i < edit_buttons.length; i++)
     {
@@ -59,21 +60,38 @@ window.onload = function()
         button_ok.appendChild(icon_ok);
         var button_cancel =  document.createElement('button');
         button_cancel.classList.add('btn','btn-sm','btn-warning','btn-cancel');
+        button_cancel.onclick = cancel;
         var icon_cancel = document.createElement('span');
         icon_cancel.classList.add('glyphicon', 'glyphicon-remove');
         button_cancel.appendChild(icon_cancel);
 //            console.log(table_row.lastChild);
+        var textElem = document.createTextNode(' ');
         table_row.lastElementChild.appendChild(button_ok);
+        table_row.lastElementChild.appendChild(textElem);
         table_row.lastElementChild.appendChild(button_cancel);
 
-        console.log(table_row);
+        function cancel() {
+            this.parentElement.querySelector('.btn-edit').classList.remove('hidden');
+            this.parentElement.querySelector('.btn-delete').classList.remove('hidden');
+            this.previousElementSibling.remove();
+            this.remove();
+        }
+
+        function edit() {
+
+        }
+
         //Редактирование логина
         var username = table_row.querySelector("[data-type=username]");
         user.username = username.innerHTML;
         username.innerHTML = '';
-        var input = document.createElement('input');
-        input.value = user.username;
-        username.appendChild(input);
+        var input_username = document.createElement('input');
+        input_username.value = user.username;
+        input_username.onchange = function () {
+            user.username = input_username.value;
+            console.log(user);
+        };
+        username.appendChild(input_username);
 
         //Редактирование Роли
         var role = table_row.querySelector("[data-type=role]");
@@ -104,21 +122,29 @@ window.onload = function()
         var email = table_row.querySelector("[data-type=email]");
         user.email = email.innerHTML;
         email.innerHTML = '';
-        input = document.createElement('input');
-        input.value = user.email;
-        email.appendChild(input);
+        var input_email = document.createElement('input');
+        input_email.value = user.email;
+        input_email.onchange = function () {
+            user.email = input_email.value;
+            console.log(user);
+        };
+        email.appendChild(input_email);
 
         //Редактирование активности
         var activity = table_row.querySelector("[data-type=activity]");
         user.activity = activity.getAttribute('data-active');
-        input = document.createElement('input');
-        input.setAttribute('type', 'checkbox');
+        var input_activity = document.createElement('input');
+        input_activity.setAttribute('type', 'checkbox');
         activity.innerHTML = 'Активен';
         if (activity.getAttribute('data-active') == 1)
         {
-            input.setAttribute('checked', 'checked');
+            input_activity.setAttribute('checked', 'checked');
         }
-        activity.insertBefore(input, activity.firstChild);
+        input_activity.onchange = function () {
+            // user.activity = input_activity.getAttribute('data-active');
+            console.log(activity.getAttribute('data-active'));
+        };
+        activity.insertBefore(input_activity, activity.firstChild);
 
 
         console.log(user);
