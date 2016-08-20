@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Пользователи</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Список пользователей
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table id="users-table" class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Логин</th>
+                                    <th>Права</th>
+                                    <th>E-mail</th>
+                                    <th>Статус</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td data-type="id">1</td>
+                                    <td data-type="login">admin</td>
+                                    <td data-type="role">Админ</td>
+                                    <td data-type="email">admin@yandex.ru</td>
+                                    <td data-type="activity" data-active="1">Активен</td>
+                                    <td>
+                                        <button data-id="1" class="btn btn-sm btn-primary btn-edit" type="button">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </button>
+                                        <button data-id="1" class="btn btn-sm btn-danger btn-delete" type="button">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td data-type="id">2</td>
+                                    <td data-type="login">user</td>
+                                    <!--<td data-type="login"><input type="text"></td>-->
+                                    <td data-type="role">Пользователь</td>
+                                    <td data-type="email">user@yandex.ru</td>
+                                    <td data-type="activity" data-active="0">Неактивен</td>
+                                    <td>
+                                        <button data-id="2" class="btn btn-sm btn-primary btn-edit" type="button">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </button>
+                                        <button data-id="2" class="btn btn-sm btn-danger btn-delete" type="button">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td><input id="username" type="text" placeholder="Имя пользователя"/></td>
+                                    <td>
+                                        <select id="role">
+                                            <option value="10">Админ</option>
+                                            <option value="20">Пользователь</option>
+                                        </select>
+                                    </td>
+                                    <td><input id="email" type="text" placeholder="email"></td>
+                                    <td><input id="active_flag" type="checkbox"> Активен</td>
+                                    <td><button class="btn btn-sm btn-success btn-new" type="button">+</button></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+<script>
+    window.onload = function()
+    {
+        var user_roles = [{id: 10, title: "Админ"},{id: 20, title: "Пользователь"}];
+
+        var delete_buttons = document.querySelectorAll(".btn-delete");
+        for(var i = 0;i < delete_buttons.length; i++)
+        {
+            delete_buttons[i].onclick = confirmDeleteUser;
+        }
+
+        function confirmDeleteUser()
+        {
+            var that = this;
+
+            var result = confirm("Действительно удалить?");
+            if (result) deleteUser();
+
+            function deleteUser()
+            {
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('GET', 'delete.txt?id='+that.getAttribute("data-id"), true);
+
+                xhr.send(); // (1)
+
+                xhr.onreadystatechange = function() { // (3)
+                    if (xhr.readyState != 4) return;
+
+                    var response = JSON.parse(xhr.responseText);
+
+                    if (response.status === 'ok')
+                    {
+                        that.parentNode.parentNode.remove();
+                    }
+                }
+            }
+        }
+
+        var edit_buttons = document.querySelectorAll(".btn-edit");
+        for(var i = 0;i < edit_buttons.length; i++)
+        {
+            edit_buttons[i].onclick = editUser;
+        }
+
+        function editUser() {
+            var that = this;
+            var table_row = this.parentElement.parentElement;
+            //Удаляем кнопки удаления/редактирования
+            table_row.lastChild.remove();
+            table_row.lastChild.remove();
+            var login = table_row.querySelector("[data-type=login]");
+            var login_content = login.innerHTML;
+            login.innerHTML = '';
+            var input = document.createElement('input');
+            input.value = login_content;
+            login.appendChild(input);
+            console.log(login.val);
+        }
+
+        //Создание пользователя
+        document.querySelector(".btn-new").onclick = function() {
+            //Сбор параметров пользователя
+            var username = document.getElementById("username").value;
+            var role = document.getElementById("role").value;
+            var email = document.getElementById("email").value;
+            var active;
+            if (document.getElementById("active_flag").checked)
+            {
+                active = 1;
+            }
+            else
+            {
+                active = 0;
+            }
+
+            //AJAX
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', 'new.php?username='+username +'&role=' + role + '&email=' + email + '&active=' + active, true);
+
+            xhr.send(); // (1)
+
+            xhr.onreadystatechange = function() { // (3)
+                if (xhr.readyState != 4) return;
+
+                var response = JSON.parse(xhr.responseText);
+
+                if (response.status === 'ok')
+                {
+                    var row = document.createElement('tr');
+
+                    var td = document.createElement('td');
+                    td.setAttribute('data-type', 'id');
+                    td.innerHTML = response.id;
+
+                    row.appendChild(td);
+
+                    td = document.createElement('td');
+                    td.setAttribute('data-type', 'username');
+                    td.innerHTML = username;
+
+                    row.appendChild(td);
+
+                    td = document.createElement('td');
+                    td.setAttribute('data-type', 'role');
+                    var user_role = 'n/a';
+                    for(var i = 0; i<user_roles.length;i++)
+                    {
+                        if (user_roles[i].id === +(role))
+                        {
+                            user_role = user_roles[i].title;
+                            break;
+                        }
+                    }
+                    td.innerHTML = user_role;
+
+                    row.appendChild(td);
+
+                    td = document.createElement('td');
+                    td.setAttribute('data-type', 'email');
+                    td.innerHTML = email;
+
+                    row.appendChild(td);
+
+                    td = document.createElement('td');
+                    td.setAttribute('data-type', 'activity');
+                    if (active === 1)
+                    {
+                        td.setAttribute('data-active', '1');
+                        td.innerHTML = "Активен";
+                    }
+                    else
+                    {
+                        td.setAttribute('data-active', '0');
+                        td.innerHTML = "Неактивен";
+                    }
+
+                    row.appendChild(td);
+
+                    td = document.createElement('td');
+
+                    var edit_btn =  document.createElement('button');
+                    edit_btn.classList.add('btn','btn-sm','btn-edit','btn-primary');
+                    edit_btn.setAttribute('type','button');
+                    edit_btn.setAttribute('data-id',response.id);
+                    edit_btn.onclick = editUser;
+                    var icon_edit = document.createElement('span');
+                    icon_edit.classList.add('glyphicon', 'glyphicon-edit');
+                    edit_btn.appendChild(icon_edit);
+                    td.appendChild(edit_btn);
+
+                    row.appendChild(td);
+
+                    var delete_btn =  document.createElement('button');
+                    delete_btn.classList.add('btn','btn-sm','btn-danger','btn-delete');
+                    delete_btn.setAttribute('type','button');
+                    delete_btn.setAttribute('data-id',response.id);
+                    delete_btn.onclick = confirmDeleteUser;
+                    var icon_delete = document.createElement('span');
+                    icon_delete.classList.add('glyphicon', 'glyphicon-trash');
+                    delete_btn.appendChild(icon_delete);
+                    td.appendChild(delete_btn);
+
+                    row.appendChild(td);
+
+                    document.querySelector('#users-table tbody').appendChild(row);
+                }
+            }
+        }
+    };
+</script>
+</body>
+</html>
