@@ -172,16 +172,32 @@
         function editUser() {
             var that = this;
             var table_row = this.parentElement.parentElement;
-            //Удаляем кнопки удаления/редактирования
-            table_row.lastChild.remove();
-            table_row.lastChild.remove();
+
+            //Скрываем кнопки удаления/редактирования
+            table_row.querySelector('.btn-edit').classList.add('hidden');
+            table_row.querySelector('.btn-delete').classList.add('hidden');
+
+            //Кнопки ОК/Отмена
+            var button_ok = document.createElement('button');
+            button_ok.classList.add('btn','btn-sm','btn-success','btn-ok');
+            var icon_ok = document.createElement('span');
+            icon_ok.classList.add('glyphicon', 'glyphicon-ok');
+            button_ok.appendChild(icon_ok);
+            var button_cancel =  document.createElement('button');
+            button_cancel.classList.add('btn','btn-sm','btn-warning','btn-cancel');
+            var icon_cancel = document.createElement('span');
+            icon_cancel.classList.add('glyphicon', 'glyphicon-remove');
+            button_cancel.appendChild(icon_cancel);
+//            console.log(table_row.lastChild);
+            table_row.lastElementChild.appendChild(button_ok);
+            table_row.lastElementChild.appendChild(button_cancel);
+
             var login = table_row.querySelector("[data-type=login]");
             var login_content = login.innerHTML;
             login.innerHTML = '';
             var input = document.createElement('input');
             input.value = login_content;
             login.appendChild(input);
-            console.log(login.val);
         }
 
         //Создание пользователя
