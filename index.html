@@ -172,6 +172,7 @@
         function editUser() {
             var that = this;
             var table_row = this.parentElement.parentElement;
+            var user = {};
 
             //Скрываем кнопки удаления/редактирования
             table_row.querySelector('.btn-edit').classList.add('hidden');
@@ -192,12 +193,50 @@
             table_row.lastElementChild.appendChild(button_ok);
             table_row.lastElementChild.appendChild(button_cancel);
 
+            //Редактирование логина
             var login = table_row.querySelector("[data-type=login]");
-            var login_content = login.innerHTML;
+            user.login = login.innerHTML;
             login.innerHTML = '';
             var input = document.createElement('input');
-            input.value = login_content;
+            input.value = user.login;
             login.appendChild(input);
+
+            //Редактирование Роли
+            var role = table_row.querySelector("[data-type=role]");
+            for(var i = 0; i<user_roles.length;i++)
+            {
+                if (user_roles[i].title === role.innerHTML)
+                {
+                    user.role = user_roles[i].id;
+                    break;
+                }
+            }
+            role.innerHTML = '';
+            var selector = document.createElement('select');
+            for(var i = 0; i<user_roles.length;i++)
+            {
+                var option = document.createElement('option');
+                option.setAttribute('value', user_roles[i].id);
+                if (user_roles[i].id === user.role)
+                {
+                    option.setAttribute('selected', 'selected');
+                }
+                option.innerHTML = user_roles[i].title;
+                selector.appendChild(option);
+            }
+            role.appendChild(selector);
+
+            //Редактирование email
+            var email = table_row.querySelector("[data-type=email]");
+            user.email = email.innerHTML;
+            email.innerHTML = '';
+            input = document.createElement('input');
+            input.value = user.email;
+            email.appendChild(input);
+
+            
+
+            console.log(user);
         }
 
         //Создание пользователя
