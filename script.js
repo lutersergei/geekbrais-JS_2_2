@@ -45,7 +45,7 @@ window.onload = function()
     }
 
     function editUser() {
-        var that = this;
+        var edit_button = this;
         var table_row = this.parentElement.parentElement;
         var user = {};
         var user_edited = {};
@@ -108,6 +108,52 @@ window.onload = function()
             user_edited.email = input_email.value;
             user_edited.activity = activity.getAttribute('data-active');
             console.log(user_edited);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', 'edit.txt?id='+edit_button.getAttribute("data-id") + '&role=' + user_edited.role + '&email=' + user_edited.email + '&active=' + user_edited.activity, true);
+
+            xhr.send();
+
+            xhr.onreadystatechange = function() {
+                // console.log(that);
+                if (xhr.readyState != 4) return;
+
+                var response = JSON.parse(xhr.responseText);
+
+                if (response.status === 'ok')
+                {
+                    input_username.remove();
+                    username.innerHTML = user_edited.username;
+
+                    selector.remove();
+                    for(var i = 0; i<user_roles.length;i++)
+                    {
+                        if (user_roles[i].id === user_edited.role)
+                        {
+                            role.innerHTML =  user_roles[i].title;
+                            break;
+                        }
+                    }
+
+                    input_email.remove();
+                    email.innerHTML = user_edited.email;
+
+                    input_activity.remove();
+                    if (+user_edited.activity === 1)
+                    {
+                        activity.innerHTML = 'Активен';
+                    }
+                    else activity.innerHTML = 'Неактивен';
+
+                    edit_button.parentElement.querySelector('.btn-edit').classList.remove('hidden');
+                    edit_button.parentElement.querySelector('.btn-delete').classList.remove('hidden');
+
+                    //Удаление кнопок редактирование/отмена
+                    edit_button.parentElement.lastElementChild .remove();
+                    edit_button.parentElement.lastElementChild .remove();
+                }
+            }
         }
 
         //Редактирование логина
@@ -277,6 +323,8 @@ window.onload = function()
                 delete_btn.onclick = confirmDeleteUser;
                 var icon_delete = document.createElement('span');
                 icon_delete.classList.add('glyphicon', 'glyphicon-trash');
+                var textElem = document.createTextNode(' ');
+                td.appendChild(textElem);
                 delete_btn.appendChild(icon_delete);
                 td.appendChild(delete_btn);
 
