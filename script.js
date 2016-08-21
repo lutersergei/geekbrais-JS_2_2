@@ -51,8 +51,7 @@ window.onload = function()
         var user_edited = {};
 
         //Скрываем кнопки удаления/редактирования
-        table_row.querySelector('.btn-edit').classList.add('hidden');
-        table_row.querySelector('.btn-delete').classList.add('hidden');
+        hideButtons();
 
         //Кнопки ОК/Отмена
         var button_ok = document.createElement('button');
@@ -71,6 +70,29 @@ window.onload = function()
         table_row.lastElementChild.appendChild(button_ok);
         table_row.lastElementChild.appendChild(textElem);
         table_row.lastElementChild.appendChild(button_cancel);
+
+        function hideButtons() {
+            for(var i = 0;i < edit_buttons.length; i++)
+            {
+                edit_buttons[i].classList.add('hidden');
+            }
+
+            for(var i = 0;i < delete_buttons.length; i++)
+            {
+                delete_buttons[i].classList.add('hidden');
+            }
+        }
+
+        function showButtons() {
+            for(var i = 0;i < edit_buttons.length; i++)
+            {
+                edit_buttons[i].classList.remove('hidden');
+            }
+            for(var i = 0;i < delete_buttons.length; i++)
+            {
+                delete_buttons[i].classList.remove('hidden');
+            }
+        }
 
         function cancel() {
             input_username.remove();
@@ -96,8 +118,8 @@ window.onload = function()
             }
             else activity.innerHTML = 'Неактивен';
 
-            this.parentElement.querySelector('.btn-edit').classList.remove('hidden');
-            this.parentElement.querySelector('.btn-delete').classList.remove('hidden');
+            showButtons();
+
             this.previousElementSibling.remove();
             this.remove();
         }
@@ -146,12 +168,11 @@ window.onload = function()
                     }
                     else activity.innerHTML = 'Неактивен';
 
-                    edit_button.parentElement.querySelector('.btn-edit').classList.remove('hidden');
-                    edit_button.parentElement.querySelector('.btn-delete').classList.remove('hidden');
+                    showButtons();
 
                     //Удаление кнопок редактирование/отмена
-                    edit_button.parentElement.lastElementChild .remove();
-                    edit_button.parentElement.lastElementChild .remove();
+                    edit_button.parentElement.lastElementChild.remove();
+                    edit_button.parentElement.lastElementChild.remove();
                 }
             }
         }
