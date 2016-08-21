@@ -104,6 +104,8 @@ window.onload = function()
             }
         }
         role.innerHTML = '';
+
+                //Создаем select из массива user_roles
         var selector = document.createElement('select');
         for(var i = 0; i<user_roles.length;i++)
         {
@@ -116,6 +118,10 @@ window.onload = function()
             option.innerHTML = user_roles[i].title;
             selector.appendChild(option);
         }
+        selector.onchange = function () {
+            user.role = +selector.value;
+        };
+
         role.appendChild(selector);
 
         //Редактирование email
