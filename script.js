@@ -120,6 +120,7 @@ window.onload = function()
         }
         selector.onchange = function () {
             user.role = +selector.value;
+            console.log(user);
         };
 
         role.appendChild(selector);
@@ -147,13 +148,19 @@ window.onload = function()
             input_activity.setAttribute('checked', 'checked');
         }
         input_activity.onchange = function () {
-            // user.activity = input_activity.getAttribute('data-active');
-            console.log(activity.getAttribute('data-active'));
+            if (input_activity.checked)
+            {
+                user.activity = 1;
+                activity.setAttribute('data-active', '1');
+            }
+            else
+            {
+                user.activity = 0;
+                activity.setAttribute('data-active', '0');
+            }
+            console.log(user);
         };
         activity.insertBefore(input_activity, activity.firstChild);
-
-
-        console.log(user);
     }
 
     //Создание пользователя
