@@ -2,6 +2,7 @@ window.onload = function()
 {
     var user_roles = [{id: 10, title: "Админ"},{id: 20, title: "Пользователь"}];
 
+//Удаление пользователя
     var delete_buttons = document.querySelectorAll(".btn-delete");
     for(var i = 0;i < delete_buttons.length; i++)
     {
@@ -36,7 +37,7 @@ window.onload = function()
         }
     }
 
-    //Редактирование пользователя
+//Редактирование пользователя
     var edit_buttons = document.querySelectorAll(".btn-edit");
     for(var i = 0;i < edit_buttons.length; i++)
     {
@@ -47,6 +48,7 @@ window.onload = function()
         var that = this;
         var table_row = this.parentElement.parentElement;
         var user = {};
+        var user_edited = {};
 
         //Скрываем кнопки удаления/редактирования
         table_row.querySelector('.btn-edit').classList.add('hidden');
@@ -57,6 +59,7 @@ window.onload = function()
         button_ok.classList.add('btn','btn-sm','btn-success','btn-ok');
         var icon_ok = document.createElement('span');
         icon_ok.classList.add('glyphicon', 'glyphicon-ok');
+        button_ok.onclick = edit;
         button_ok.appendChild(icon_ok);
         var button_cancel =  document.createElement('button');
         button_cancel.classList.add('btn','btn-sm','btn-warning','btn-cancel');
@@ -64,13 +67,35 @@ window.onload = function()
         var icon_cancel = document.createElement('span');
         icon_cancel.classList.add('glyphicon', 'glyphicon-remove');
         button_cancel.appendChild(icon_cancel);
-//            console.log(table_row.lastChild);
         var textElem = document.createTextNode(' ');
         table_row.lastElementChild.appendChild(button_ok);
         table_row.lastElementChild.appendChild(textElem);
         table_row.lastElementChild.appendChild(button_cancel);
 
         function cancel() {
+            input_username.remove();
+            username.innerHTML = user.username;
+
+            selector.remove();
+            for(var i = 0; i<user_roles.length;i++)
+            {
+                if (user_roles[i].id === user.role)
+                {
+                    role.innerHTML =  user_roles[i].title;
+                    break;
+                }
+            }
+
+            input_email.remove();
+            email.innerHTML = user.email;
+
+            input_activity.remove();
+            if (+user.activity === 1)
+            {
+                activity.innerHTML = 'Активен';
+            }
+            else activity.innerHTML = 'Неактивен';
+
             this.parentElement.querySelector('.btn-edit').classList.remove('hidden');
             this.parentElement.querySelector('.btn-delete').classList.remove('hidden');
             this.previousElementSibling.remove();
@@ -78,7 +103,11 @@ window.onload = function()
         }
 
         function edit() {
-
+            user_edited.username = input_username.value;
+            user_edited.role = +selector.value;
+            user_edited.email = input_email.value;
+            user_edited.activity = activity.getAttribute('data-active');
+            console.log(user_edited);
         }
 
         //Редактирование логина
@@ -87,10 +116,6 @@ window.onload = function()
         username.innerHTML = '';
         var input_username = document.createElement('input');
         input_username.value = user.username;
-        input_username.onchange = function () {
-            user.username = input_username.value;
-            console.log(user);
-        };
         username.appendChild(input_username);
 
         //Редактирование Роли
@@ -118,11 +143,6 @@ window.onload = function()
             option.innerHTML = user_roles[i].title;
             selector.appendChild(option);
         }
-        selector.onchange = function () {
-            user.role = +selector.value;
-            console.log(user);
-        };
-
         role.appendChild(selector);
 
         //Редактирование email
@@ -131,10 +151,6 @@ window.onload = function()
         email.innerHTML = '';
         var input_email = document.createElement('input');
         input_email.value = user.email;
-        input_email.onchange = function () {
-            user.email = input_email.value;
-            console.log(user);
-        };
         email.appendChild(input_email);
 
         //Редактирование активности
@@ -150,20 +166,17 @@ window.onload = function()
         input_activity.onchange = function () {
             if (input_activity.checked)
             {
-                user.activity = 1;
                 activity.setAttribute('data-active', '1');
             }
             else
             {
-                user.activity = 0;
                 activity.setAttribute('data-active', '0');
             }
-            console.log(user);
         };
         activity.insertBefore(input_activity, activity.firstChild);
     }
 
-    //Создание пользователя
+//Создание пользователя
     document.querySelector(".btn-new").onclick = function() {
         //Сбор параметров пользователя
         var username = document.getElementById("username").value;
