@@ -4,6 +4,7 @@ window.onload = function()
 
     getUsers();
 
+    //Функция получения всех пользователей из users.php
     function getUsers() {
         var xhr = new XMLHttpRequest();
 
@@ -28,6 +29,7 @@ window.onload = function()
         }
     }
 
+    //Функция формирования и вставки нода с информацией о пользователе
     function AddUser(selector, options) {
         var container = document.querySelector(selector);
         var row = document.createElement('tr');
@@ -147,10 +149,12 @@ window.onload = function()
     }
 
 //Редактирование пользователя
-    var edit_buttons = document.querySelectorAll(".btn-edit");
-    for(var i = 0;i < edit_buttons.length; i++)
-    {
-        edit_buttons[i].onclick = editUser;
+    function getEditButtons() {
+        return document.querySelectorAll(".btn-edit");
+    }
+
+    function getDeleteButtons() {
+        return document.querySelectorAll(".btn-delete");
     }
 
     function editUser() {
@@ -160,7 +164,7 @@ window.onload = function()
         var user_edited = {};
 
         //Скрываем кнопки удаления/редактирования
-        hideButtons();
+        hideEditDeleteButtons();
 
         //Кнопки ОК/Отмена
         var button_ok = document.createElement('button');
@@ -180,7 +184,9 @@ window.onload = function()
         table_row.lastElementChild.appendChild(textElem);
         table_row.lastElementChild.appendChild(button_cancel);
 
-        function hideButtons() {
+        function hideEditDeleteButtons() {
+            var edit_buttons = getEditButtons();
+            var delete_buttons = getDeleteButtons();
             for(var i = 0;i < edit_buttons.length; i++)
             {
                 edit_buttons[i].classList.add('hidden');
@@ -192,7 +198,9 @@ window.onload = function()
             }
         }
 
-        function showButtons() {
+        function showEditDeleteButtons() {
+            var edit_buttons = getEditButtons();
+            var delete_buttons = getDeleteButtons();
             for(var i = 0;i < edit_buttons.length; i++)
             {
                 edit_buttons[i].classList.remove('hidden');
@@ -227,7 +235,7 @@ window.onload = function()
             }
             else activity.innerHTML = 'Неактивен';
 
-            showButtons();
+            showEditDeleteButtons();
 
             this.previousElementSibling.remove();
             this.remove();
@@ -277,7 +285,7 @@ window.onload = function()
                     }
                     else activity.innerHTML = 'Неактивен';
 
-                    showButtons();
+                    showEditDeleteButtons();
 
                     //Удаление кнопок редактирование/отмена
                     edit_button.parentElement.lastElementChild.remove();
@@ -306,7 +314,7 @@ window.onload = function()
         }
         role.innerHTML = '';
 
-                //Создаем select из массива user_roles
+        //Создаем select из массива user_roles
         var selector = document.createElement('select');
         for(var i = 0; i<user_roles.length;i++)
         {
@@ -379,6 +387,7 @@ window.onload = function()
         xhr.onreadystatechange = function() { // (3)
             if (xhr.readyState != 4) return;
 
+            console.log(xhr.responseText);
             var response = JSON.parse(xhr.responseText);
 
             if (response.status === 'ok')
