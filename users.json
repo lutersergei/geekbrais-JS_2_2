@@ -1,0 +1,14 @@
+{
+  "status": "ok",
+  "users": [{
+    "id": "1",
+    "username": "admin",
+    "role": "10",
+    "activity": "1"
+  }, {
+    "id": "2",
+    "username": "user",
+    "role": "20",
+    "activity": "0"
+  }]
+}
